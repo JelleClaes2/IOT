@@ -1,21 +1,33 @@
-name: compile
+name: Cross-Compile C for PYNQ-Z2
 
 on:
   push:
-    branches: [main]
-  pull_request:
-    branches: [main]
-  workflow_dispatch:
+    branches:
+      - main 
 
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Check out code
-        uses: actions/checkout@v2
-      
-      - name: Compile and run
-        run: |
-          gcc --version
-          gcc main.c -o main.exe
-          ./main.exe
+    - name: Check Out Code
+      uses: actions/checkout@v2
+
+    - name: Install Dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y gcc-arm-linux-gnueabihf
+
+    - name: Cross-Compile
+      run: |
+        arm-linux-gnueabihf-gcc main.c -o main.exe
+
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: compiled-artifacts
+        path: main.exe
+
+    - name: Save Compiled Binary Path
+      id: binary-path
+      run: echo "::set-output name=binary_path::main.exe"
