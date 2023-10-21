@@ -15,7 +15,6 @@ jobs:
 
     - name: Install Dependencies
       run: |
-        sudo apt-get update
         apt install --yes {gcc,binutils}-arm-linux-gnueabihf
 
     - name: Cross-Compile
